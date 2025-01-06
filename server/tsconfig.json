@@ -1,0 +1,18 @@
+{
+	"compilerOptions": {
+		"target": "ES6",
+		"module": "ESNext",
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"outDir": "./dist",
+		"rootDir": "./src",
+		"strict": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"experimentalDecorators": true,
+		"sourceMap": true
+	},
+	"include": ["src/**/*.ts"], // Включаем все файлы .ts в папке src
+	"exclude": ["node_modules"]
+}
