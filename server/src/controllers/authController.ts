@@ -1,8 +1,9 @@
 import { inject, injectable } from "inversify";
 import { Request, Response } from "express";
 import { IAuthService } from "../services/interfaces/authService.interface";
-import { accessTokenConfig, refreshTokenConfig } from "../config/cookiesCOnfig";
-import InternalServerError from "../domain/errors/InternalServerError";
+import { accessTokenConfig, refreshTokenConfig } from "../config/cookiesConfig";
+import ValidationError from "../domain/errors/ValidationError";
+import NotFoundError from "../domain/errors/NotFoundError";
 
 @injectable()
 export class AuthController {
@@ -20,7 +21,17 @@ export class AuthController {
 				.status(200)
 				.json("Successfully authenticated");
 		} catch (error) {
-			throw new InternalServerError();
+			if (error instanceof NotFoundError) {
+				return res
+					.status(404)
+					.json("User with this email was not found");
+			}
+
+			if (error instanceof ValidationError) {
+				return res.status(400).json("Incorrect data");
+			}
+
+			return res.status(500).json("Internal server error");
 		}
 	}
 
@@ -28,11 +39,8 @@ export class AuthController {
 		try {
 			const data = req.body;
 			await this.authService.register(data);
-		} catch (error) {}
-	}
-
-	async refreshToken(req: Request, res: Response) {
-		try {
-		} catch (error) {}
+		} catch (error) {
+			return res.status(500).json("Internal server error");
+		}
 	}
 }

@@ -64,4 +64,17 @@ export class NewsService {
 			throw new InternalServerError();
 		}
 	}
+
+	async getAllNewsSections(): Promise<NewsViewModel[]> {
+		try {
+			const news = await fetch(
+				`${this.base_link}sections?api-key=${process.env.GUARDIANS_API_KEY}`
+			);
+
+			const data = await news.json();
+			return data as NewsViewModel[];
+		} catch (error) {
+			throw new InternalServerError();
+		}
+	}
 }

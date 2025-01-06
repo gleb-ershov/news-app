@@ -6,4 +6,15 @@ export interface NewsViewModel {
 	webPublicationDate: string;
 	webTitle: string;
 	webUrl: string;
+	apiUrl: string;
+	fields: {
+		headline: string;
+		standfirst: string;
+		trailText: string;
+		byline: string;
+		publication: string;
+		shortUrl: string;
+		thumbnail: string;
+		bodyText: string;
+	};
 }

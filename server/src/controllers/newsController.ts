@@ -21,9 +21,9 @@ export class NewsController {
 			return res.status(200).json(news);
 		} catch (error) {
 			if (error instanceof BadRequestError) {
-				throw error;
+				return res.status(401).json("Incorrect page parameter type.");
 			}
-			throw new InternalServerError();
+			return res.status(500).json("Internal server error.");
 		}
 	}
 
@@ -38,9 +38,9 @@ export class NewsController {
 			return res.status(200).json(news);
 		} catch (error) {
 			if (error instanceof BadRequestError) {
-				throw error;
+				return res.status(401).json("News article id is not provided.");
 			}
-			throw new InternalServerError();
+			return res.status(500).json("Internal server error.");
 		}
 	}
 
@@ -50,7 +50,16 @@ export class NewsController {
 			const news = await this.newsService.getNewsSection(section);
 			return res.status(200).json(news);
 		} catch (error) {
-			throw new InternalServerError();
+			return res.status(500).json("Internal server error.");
+		}
+	}
+
+	async getAllNewsSections(req: Request, res: Response) {
+		try {
+			const news = await this.newsService.getAllNewsSections();
+			return res.status(200).json(news);
+		} catch (error) {
+			return res.status(500).json("Internal server error.");
 		}
 	}
 }
