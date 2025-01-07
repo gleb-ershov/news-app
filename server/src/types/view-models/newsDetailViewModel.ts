@@ -1,4 +1,4 @@
-export interface NewsViewModel {
+export interface NewsDetailViewModel {
 	id: string;
 	type: string;
 	sectionId: string;

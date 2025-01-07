@@ -1,8 +1,8 @@
 import { inject, injectable } from "inversify";
 import { INewsService } from "../services/interfaces/newsService.interface";
 import { Request, Response } from "express";
-import InternalServerError from "../domain/errors/InternalServerError";
 import BadRequestError from "../domain/errors/BadRequestError";
+import { NewsSectionViewModel } from "../types/view-models/newsSectionViewModel";
 
 @injectable()
 export class NewsController {
@@ -44,20 +44,28 @@ export class NewsController {
 		}
 	}
 
-	async getNewsSection(req: Request, res: Response) {
+	async getNewsSectionsByQuery(
+		req: Request,
+		res: Response
+	): Promise<Response<NewsSectionViewModel>> {
 		try {
-			const section = req.params.section;
-			const news = await this.newsService.getNewsSection(section);
-			return res.status(200).json(news);
+			const sectionName = req.params.section;
+			const section = await this.newsService.getNewsSectionsByQuery(
+				sectionName
+			);
+			return res.status(200).json(section);
 		} catch (error) {
 			return res.status(500).json("Internal server error.");
 		}
 	}
 
-	async getAllNewsSections(req: Request, res: Response) {
+	async getAllNewsSections(
+		req: Request,
+		res: Response
+	): Promise<Response<NewsSectionViewModel[]>> {
 		try {
-			const news = await this.newsService.getAllNewsSections();
-			return res.status(200).json(news);
+			const sections = await this.newsService.getAllNewsSections();
+			return res.status(200).json(sections);
 		} catch (error) {
 			return res.status(500).json("Internal server error.");
 		}
