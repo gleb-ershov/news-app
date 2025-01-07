@@ -17,4 +17,8 @@ newsRouter.get("/api/news/sections/:section", (req, res) => {
 	newsController.getNewsSectionsByQuery(req, res);
 });
 
+newsRouter.get("/api/news/sections", (req, res) => {
+	newsController.getAllNewsSections(req, res);
+});
+
 export default newsRouter;

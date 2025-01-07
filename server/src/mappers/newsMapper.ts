@@ -24,11 +24,6 @@ export class NewsMapper {
 				webTitle: article.webTitle,
 				webUrl: article.webUrl,
 				apiUrl: article.apiUrl,
-				fields: {
-					headline: article.fields.headline,
-					shortUrl: article.fields.shortUrl,
-					thumbnail: article.fields.thumbnail,
-				},
 			};
 		});
 	}

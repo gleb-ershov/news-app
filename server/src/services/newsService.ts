@@ -1,7 +1,6 @@
 import { injectable } from "inversify";
 import fetch from "node-fetch";
 import InternalServerError from "../domain/errors/InternalServerError";
-import { NewsViewModel } from "../types/view-models/newsDetailViewModel";
 import BadRequestError from "../domain/errors/BadRequestError";
 import { NewsSectionViewModel } from "../types/view-models/newsSectionViewModel";
 import NotFoundError from "../domain/errors/NotFoundError";
@@ -9,13 +8,15 @@ import { NewsItemDetailResponse } from "../types/newsApi/newsItemDetailResponse"
 import { NewsItemSummaryResponse } from "../types/newsApi/newsItemSummaryResponse";
 import { NewsSectionsResponse } from "../types/newsApi/newsSectionResponse";
 import { NewsMapper } from "../mappers/newsMapper";
+import { NewsSummaryViewModel } from "../types/view-models/newsSummaryViewModel";
+import { NewsDetailViewModel } from "../types/view-models/newsDetailViewModel";
 
 @injectable()
 export class NewsService {
 	constructor() {}
 	base_link = "https://content.guardianapis.com/";
 
-	async getLatestNews(page?: string): Promise<NewsViewModel[]> {
+	async getLatestNews(page?: string): Promise<NewsSummaryViewModel[]> {
 		const withPage = page ? `page=${page}&` : "";
 		let isParamValid = /^\d+$/.test(page || "");
 		if (page && !isParamValid) {
@@ -28,7 +29,7 @@ export class NewsService {
 			const news = await fetch(
 				`${this.base_link}search?${withPage}api-key=${process.env.GUARDIANS_API_KEY}`
 			);
-			const data = (await news.json()) as NewsItemSummaryResponse[];
+			const data = (await news.json()) as NewsItemSummaryResponse;
 			return NewsMapper.toSummaryItemViewModel(data);
 		} catch (error) {
 			if (error instanceof BadRequestError) {
@@ -38,7 +39,7 @@ export class NewsService {
 		}
 	}
 
-	async getNewsSingleItem(id: string): Promise<NewsViewModel> {
+	async getNewsSingleItem(id: string): Promise<NewsDetailViewModel> {
 		if (!id) {
 			throw new BadRequestError("News article id is not pro	vided.");
 		}
@@ -77,7 +78,7 @@ export class NewsService {
 			}
 
 			const data = (await sectionResponse.json()) as NewsSectionsResponse;
-			return NewsMapper.toSectionViewModel(data);
+			return NewsMapper.toSectionViewModels(data);
 		} catch (error) {
 			throw new InternalServerError();
 		}
@@ -89,8 +90,8 @@ export class NewsService {
 				`${this.base_link}sections?api-key=${process.env.GUARDIANS_API_KEY}`
 			);
 
-			const data = (await sections.json()) as NewsSectionsResponse[];
-			return NewsMapper.toSectionViewModelList(data);
+			const data = (await sections.json()) as NewsSectionsResponse;
+			return NewsMapper.toSectionViewModels(data);
 		} catch (error) {
 			throw new InternalServerError();
 		}
